@@ -112,7 +112,40 @@ A figura \ref{fig:caminhos_alternativos}, também modela um evento de repetiçã
     \label{fig:caminhos_alternativos}
 \end{figure}
 
-\section{Redes de Petri colorida}
-Para modelagem e controle desse sistema composto por vários agentes, escolheu-se a abordagem por redes de Petri coloridas.
+\section{Redes de Petri}
+A rede de Petri é uma ferramenta gráfica e matemática para modelagem e controle de sistemas à eventos discretos, dado que o sistema a ser escolhido é um sistema que pode ser modelado através de tal ferramenta, com o intuito de obter uma visualização gráfica do processo, implementar lógica de controle e sincronismo, analisar propriedades da rede entre outras.
+Para a modelagem proposta utilizou-se a ferramenta do CPN Tools, assim como as funcionalidades envolvendo hierarquia para maior legibilidade da rede.
 
-As redes de Petri  coloridas são uma ferramenta gráfica e matemática que se adaptam bem a um grande numero de aplicações, tais como protocolos de comunicação, controle de oficinas de fabricação. 
+De acordo com \cite{cassandras}, os eventos na RP são relacionados as transições, de modo que para que aconteça o disparo de uma transição é necessário satisfazer determinadas condições inscritas na rede.
+As informações relacionadas a tais condições estão contidas em lugares, que são vistos como "entradas" das transições. Lugares, transições e as relações entre eles são os componentes básicos de uma RP. A RP possuí dois tipos de nós, lugares e transições, e os arcos que conectam eles. Na definição de grafos a RP é classificada com um grafo bipartido de modo que os arcos não podem conectar diretamente dois nós do mesmo tipo, exemplo lugar a lugar ou transição a transição.
+A definição de grafo é dada a seguir.
+
+\subsection{Linguagem Formal}
+A Rede de Petri é definida como um grafo bipartido ponderado, dado pelo conjunto $(P,T,A,w,x)$, tal que:
+\begin{itemize}
+    \item $P$ é o conjunto finito de lugares (um tipo de nó na grafo)
+    \item $T$ é o conjunto finito de transições (o outro tipo de nó no grafo)
+    \item $A \subseteq (P \times T) \cup (T \times P)$ é o conjunto de arcos dos lugares para as transições e das transições para os lugares no grafo.
+    \item  $w : A \rightarrow \{1, 2, 3, \ldots\}$ são as funções de ponderação dos arcos.
+    \item $x$ : é a marcação da rede de Petri dada pela função $x : P \rightarrow \mathbb{N} = \{0, 1, 2, \ldots\}$, tal marcação é definida como um vetor linha $x = x(p_1), x(p_2), ..., x(p_n)$, tal que $n$, é o número de lugares na rede.
+\end{itemize}
+É considerado que em $(P,T,A,w)$, não tem lugares em transições isolados.
+Na representação em grafos os lugares $P = {p_1,p_2,p_3, ..}$ são representados com um círculo, as transições $T = {t_1,t_2,t_3,...}$ como retângulos.Os conjunto de arcos $A = {w_1,w_2,w_3,...}$, cada arco $w$ é representado em função de um lugar e uma transição e o peso associado como $w(p_i,t_j) = W$, tal que o arco liga o lugar $p_i$ a transição $t_j$ e possui o peso igual a $W$. A marcação no grafo é dada como fichas (ponto preto) no lugar marcado $p_i$ tal que $x(p_i) \in \mathbb{N}$.
+Um exemplo de rede com os elementos citados é representado pelo grafo na figura \ref{fig:ex_rp}.
+
+\begin{figure}[ht]
+    \includegraphics[scale=0.6]{figures/Petri/exemplo_rp.png}
+    \caption{Exemplo de Rede de Petri}
+    \label{fig:ex_rp}
+\end{figure}
+
+Tem-se x lugares, .. . ..
+ ..
+  . .. 
+  . . .
+   . . .
+   
+%\subsection{Redes de Petri Colorida}
+%As redes de Petri  coloridas são uma ferramenta gráfica e matemática que se adaptam bem a um grande numero de aplicações, tais como protocolos de comunicação, controle de oficinas de fabricação. 
+
+%% Apresentar em formato de quadro.
