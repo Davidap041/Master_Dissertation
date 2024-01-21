@@ -5,14 +5,15 @@
 No estudo da interação e comportamento entre sistemas dinâmicos, as interconexões entre os agentes e o fluxo de informações formam uma rede de comunicação. Essa rede é modelada através da teoria dos grafos em que cada sistema é representado por um nó, também chamado de agente.
 % Adicionar Referência do livro que fala sobre
 
-Um grafo é um par $G = (V, E)$, tal que $V = \{v_{1},v_{2}, ...,v_{N}\}$ é um conjunto de $N$ nós ou vértices e $E$ um conjunto de vetores ou arcos. Um elemento pertencente a $E$ é um par $(v_{i}, v_{j})$ tal que é um vetor que liga $v_{i}$ à $v_{j}$, e é representado como uma flecha em que a cauda está em $v_{i}$ e a ponta em $v_{j}$ como demonstrado na figura ~\ref{fig:nos_arestas_grafos}. 
+Um grafo é um par $G = (V, E)$, tal que $V = \{v_{1},v_{2}, ...,v_{N}\}$ é um conjunto de $N$ nós ou vértices e $E$ um conjunto de vetores ou arcos. Um elemento pertencente a $E$ é um par $(v_{i}, v_{j})$ tal que é um vetor que liga $v_{i}$ à $v_{j}$, e é representado como uma flecha em que a cauda está em $v_{i}$ e a ponta em $v_{j}$ como demonstrado na Figura ~\ref{fig:nos_arestas_grafos}. 
 % Adicionar Grafo exemplo desenhado : exemplo de nós e arcos em um grafo
 
 \begin{figure}[hb]
     \centering
+    \caption{Exemplo de nós e arestas em um grafo.}
     \includegraphics[scale=0.3]{figures/Multiagente/ex_grafo2.png}
-    \caption{Exemplo de nós e arestas em um grafo}
     \label{fig:nos_arestas_grafos}
+    \legend{Fonte: elaborada pelo autor.}
 \end{figure}
 
 Os graus de liberdade de entrada de um dado nó $v_i$ é definido como o número de vetores que a ponta da flecha se encontra em $v_i$. Do mesmo modo, os graus de liberdade de saída de um nó $v_i$ é dado pelo número de vetores que em $v_i$ se encontra a cauda da flecha.
@@ -57,12 +58,13 @@ Define-se a matriz diagonal de graus de entrada, pela equação \ref{eq:matrizDi
 \end{equation}
 Por fim a matriz Laplaciana $L$ é definida como $L = D-A$, tal que $D$ é a matriz Diagonal e $A$ é a matriz de Adjacência.
 \\
-Um exemplo de matriz laplaciana associada ao grafo pode ser ilustrada através da figura \ref{fig:exemplo_grafo}, em que a matriz Diagonal $D$ é dada pela matriz \ref{eq:matriz_d1}. 
+Um exemplo de matriz laplaciana associada ao grafo pode ser ilustrada através da Figura \ref{fig:exemplo_grafo}, em que a matriz Diagonal $D$ é dada pela matriz \ref{eq:matriz_d1}. 
 
 \begin{figure}
     \centering
+    \caption{Exemplo de um grafo.}
     \includegraphics[scale=0.2]{figures/Multiagente/ex_grafos1.png}
-    \caption{Exemplo de um grafo}
+    \legend{Fonte: elaborada pelo autor.}
     \label{fig:exemplo_grafo}
 \end{figure}
 
