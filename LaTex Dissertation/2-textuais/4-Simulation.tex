@@ -266,6 +266,113 @@ Caso não tenha ocorrido ultrapassagem a transição $t_{37}$ é acionada envian
 \end{figure}
 
 \section{Controle Cooperativo aplicado a Multiagentes}
-Posteriormente à detalhada modelagem do sistema na seção \ref{sec:model_RPC} que foi definida os principais eventos do sistema, além da arquitetura da rede que gera algumas regras para o deslocamento dos vagões é buscada um controle de nível superior responsável por otimizar a referência de posição de cada vagão. Para o desenvolvimento do controle cooperativo entre os vagões com o objetivo de evitar colisões e promover a otimização das trajetórias é importante garantir que as transições na rede de petri possuem acionamentos praticamente instantâneos não influenciando assim de forma significativa na dinâmica do sistema.
+Posteriormente à detalhada modelagem do sistema na seção \ref{sec:model_RPC} que foi definida os principais eventos do sistema, além da arquitetura da rede que gera algumas regras para o deslocamento dos vagões é buscada um controle de nível superior responsável por otimizar a referência de posição de cada vagão. Para o desenvolvimento do controle cooperativo entre os vagões com o objetivo de evitar   colisões e promover a otimização das trajetórias é importante garantir que as transições na rede de petri possuem acionamentos praticamente instantâneos não influenciando assim de forma significativa na dinâmica do sistema.
 
+Para a coordenação e intercomunicação entre os agentes e a referência (agente virtual ou líder), foi escolhido o modelado o seguinte grafo \ref{fig:grafo_cooperativo}. Tal que $x_1$ e $x_2$, são os dois agentes da planta e o líder e dado por $x_3$. Note, que o grafo é classificado com um \textit{direct tree}, pois existe somente um líder o qual possui grau de entrada nulo, como apresentado na subseção \ref{sub:consenso_lider}. 
 
+\begin{figure}[ht]
+    \centering
+    \caption{Modelagem do grafo entre agentes}
+    \label{fig:grafo_cooperativo}
+    \includegraphics[width=0.4\linewidth]{figures/Simulation/Cooperativo/grafo_cooperativo.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+Foram formulados dois tipos de problemática para o controle, o primeiro relacionado aos momentos que acontecem uma situação de ultrapassagem no ciclo de uma volta partindo e chagando em $d_1$ na pista da figura \ref{fig:pista_com_dois_agentes}, e o segundo o ciclo de uma volta sem ultrapassagem.
+
+\subsection{Casos de Ultrapassagem}
+Para a simulação e comportamento do controle por consenso nos casos de ultrapassagem foram escolhidas 4 referências diferentes para demonstrar o comportamento do sistema de acordo com a tabela \ref{tab:caso1_utrapassagem}. 
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{c|c}                 
+         referência & trajetória  \\ \cline{1-2}
+          0.5 & $d_1$ para $d_6$ e $d_3$  \\ \cline{1-2}
+         -0.5 & $d_3$ e $d_6$ para $d_2$ \\ \cline{1-2}
+         -0.2 & $d_2$ para $d_5$  \\ \cline{1-2}
+            0 & $d_5$ para $d_1$ \\     
+    \end{tabular}
+    \caption{Escolha de referências ao longo do tempo com inversão de sinal}
+    \label{tab:caso1_utrapassagem}
+\end{table}
+Por meio da simulação com todos os pesos nos arcos iguais a $0.5$ é obtido a seguinte o gráfico da figura \ref{fig:case1}. Note que inicialmente é praticamente  considerado que os dois iniciam praticamente junto e vão se separando no tempo de 0 a 20 minutos, até que ao chegar aproximadamente em torno de 30 segundo a referência é alterada e é feita uma ultrapassagem nos momentos seguintes as colocações se mantêm mas a distância entre os agentes vai cada vez mais diminuindo coma escolha das referências. 
+
+\begin{figure}[ht]
+    \centering
+    \caption{Simulação Caso de Ultrapassagem}
+    \label{fig:case1}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case1.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+A partir da figura \ref{fig:case1_fig2} é visualizado o comportamento da velocidade entre os agentes assim como as mudanças de referência, note que mesmo o líder submetido a valores constantes de referência, o sistema gradualmente estabiliza naquele ponto de referência, gerando assim uma mudança de referência mais suave.
+\begin{figure}[ht]
+    \centering
+    \caption{Análise velocidade Caso de Ultrapassagem}
+    \label{fig:case1_fig2}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case1_fg2.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+Um segundo resultado é obtido diminuindo a em torno de 4x a comunicação com o líder, mas mantendo o mesmo valor de comunicação entre os agentes. Tal exemplo é demonstrada na figura \ref{fig:case2_fig2}, note que para esse caso a formação dos agentes se mantém ao longo de todas as mudanças de referência, o que muda é a velocidade em que os agentes alcançam a velocidade relativa de zero. Na aplicação proposta esse comportamento não é desencorajado uma vez que o foco tem sido o mantimento da formação nos casos de ultrapassagem.
+
+\begin{figure}[ht]
+    \centering
+    \caption{Análise Diminuição do peso da comunicação com o líder no Caso de Ultrapassagem}
+    \label{fig:case2_fig2}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case2_fg2.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+Ainda na análise com os valores de referência descritos na tabela \ref{tab:caso1_utrapassagem}, um importante ponto a ser realçado é que para manter a mesma configuração com a ultrapassagem somente no ponto onde a referência é dada como negativa é importante que o peso dos arcos entre os agentes seja semelhantes, pois a medida que a diferença aumenta  a velocidade em que um agente procura a referência é maior que a do outro, podendo ocasionar uma segunda ultrapassagem, exemplo desse comportamento evitado para a aplicação dada é demonstrado na figura \ref{fig:case3_fig2}. Note que o perfil de velocidade se assemelha nos dois casos, mas na posição é possível perceber que em torno de 90 min o agente A vai de encontro a referência do líder mais rapidamente que o Agente B, ocasionando uma segunda ultrapassage, e de fato para essa simulação o peso do arco do agente A em relação com o líder em relação ao agente B com o líder é em torno de 4x maior.
+
+\begin{figure}[ht]
+    \centering
+    \caption{Análise pesos muito diferentes na comunicação com o líder Caso de Ultrapassagem}
+    \label{fig:case3_fig2}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case3_fg2.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+\subsection{Casos de Não Ultrapassagem}
+O segundo grupo de simulações é relacionado aos casos onde não é necessário que ocorra ultrapassagem entre os agentes, ou seja a formação inicial seja mantida ao longo das mudanças de referência. Para isso é utilizado os valores de referência de acordo com a a tabela \ref{tab:caso1_sem_utrapassagem}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{c|c}                 
+         referência & trajetória  \\ \cline{1-2}
+         0.2 & $d_1$ para $d_6$ e $d_3$  \\ \cline{1-2}
+         0.5 & $d_3$ e $d_6$ para $d_2$ \\ \cline{1-2}
+         0.2 & $d_2$ para $d_5$  \\ \cline{1-2}
+            0 & $d_5$ para $d_1$ \\     
+    \end{tabular}
+    \caption{Escolha de referências ao longo do tempo sem inversão de sinal}
+    \label{tab:caso1_sem_utrapassagem}
+\end{table}
+
+Por meio da simulação com todos os pesos nos arcos iguais a $0.5$ é obtido a seguinte o gráfico da figura \ref{fig:case4}. Note que inicialmente é considerado que os dois iniciam praticamente junto e vão se separando no tempo de 0 a 20 minutos, e em quanto o valor de referência sobe, a distância entre eles aumenta até o momento que a referência começa a diminuir. Note que a formação do grupo de agentes se mantém a mesma ao longo de diferentes valores de referência positiva.
+
+\begin{figure}[ht]
+    \centering
+    \caption{Simulação Caso de não ultrapassagem}
+    \label{fig:case4}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case4_fg2.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+De forma análoga um segundo resultado é obtido diminuindo em torno de 4x a comunicação com o líder, mas mantendo o mesmo valor de comunicação entre os agentes. Tal exemplo é demonstrada na figura \ref{fig:case5}, note que para esse caso a formação dos agentes se mantém ao longo de todas as mudanças de referência, o que muda é a velocidade em que os agentes alcançam a velocidade relativa de zero.
+
+\begin{figure}[ht]
+    \centering
+    \caption{Simulação Caso de não ultrapassagem, diminuição peso comunicação com o líder}
+    \label{fig:case5}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case5_fg2.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+Por fim, para fins de análise, é refeito o testes de pesos desbalanceados em relação ao líder, o resultado é demonstrado na figura \ref{fig:case6}, note que o mesmo tipo de comportamento acontece como demonstrado no caso de ultrapassagem, em que a formação é alterada perto do ponto de referência nula do líder. No caso de manter a formação tal comportamento não é desejado.
+\begin{figure}[ht]
+    \centering
+    \caption{Simulação Caso de não ultrapassagem, grande diferença peso na comunicação com o líder}
+    \label{fig:case6}
+    \includegraphics[width=1\linewidth]{figures/Simulation/Cooperativo/case6_fg2.png}
+    \legend{Fonte: Elaborado pelo autor.}
+\end{figure}
