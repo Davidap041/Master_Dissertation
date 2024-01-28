@@ -8,10 +8,157 @@ Para a implementação do algoritmo matemático de consenso, optou-se por utiliz
 
 Ao unir a simulação do sistema multiagente com as capacidades do CPN-Tools e a flexibilidade do Python, almeja-se obter resultados robustos que validem a eficácia da abordagem proposta. Esta seção detalhará o processo de simulação, desde a definição dos parâmetros até a análise crítica dos resultados obtidos, proporcionando uma compreensão clara e abrangente da validade e desempenho da abordagem integrada.
 
+No método integrado de modelagem e controle baseado em Redes de Petri Coloridas e sistemas multiagentes, propõe-se uma subdivisão de responsabilidade entre os sistemas envolvidos no processo. Esses sistemas são o sistema supervisório, o sistema de automação e o sistema de controle cooperativo. A organização desses sistemas é ilustrada na figura \ref{fig:topologia_integrada}, onde o sistema supervisório se comunica com o sistema de automação, e este, por sua vez, com o sistema de controle cooperativo.
+
+\begin{figure}[ht]
+\centering
+\caption{Organização dos sistemas na Abordagem Integrada para sistemas multiagentes industriais.}
+\includegraphics[width=0.5\linewidth]{figures/Simulation/Planta/topologia_integrada.png}
+\label{fig:topologia_integrada}
+\legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+Na modelagem proposta, o sistema supervisório é encarregado dos requisitos e comandos para o sistema, como o controle dos horários, a ordem de chegada dos trens e outros parâmetros de alto nível. Abaixo, o sistema de automação é responsável por promover um protocolo para o segmento de trajetória e ultrapassagens, conforme ordenado pelo sistema supervisório. Este sistema de automação pode ser modelado utilizando as Redes de Petri Coloridas.
+
+Por fim, abaixo do sistema de automação, temos o sistema de controle cooperativo, responsável por otimizar as referências de velocidade e trajetória dentro das restrições e protocolos estabelecidos pelo sistema de automação.
+
+
+
+
+
+
+
 \section{Planta Industrial}
 A gestão de vagões em uma planta industrial, que permite a ultrapassagem entre eles por meio de mudanças nas pistas, representa uma abordagem inovadora no contexto ferroviário industrial. Esse sistema dinâmico busca otimizar o movimento e a alocação de vagões, proporcionando flexibilidade e eficiência operacional.
 
-Ao incorporar a capacidade de ultrapassagem, a planta industrial adquire versatilidade, possibilitando a reorganização estratégica dos vagões para atender a demandas específicas. Essa funcionalidade torna-se particularmente valiosa em situações onde é necessário priorizar determinados vagões, reduzir tempos de espera ou melhorar o desempenho global do sistema ferroviário dentro do contexto da planta industrial.
+A otimização da trajetória e da velocidade tornou-se uma prioridade devido à necessidade de reduzir o consumo de energia nos trens de carga para combater o efeito estufa. No estudo de \cite{train2023}, foi proposto um método de aprendizado por reforço para otimizar a velocidade de múltiplos agentes, visando alcançar eficiência energética, pontualidade e precisão no estacionamento. O autor examinou estudos de caso em Pequim, explorando abordagens como controle preditivo fuzzy, algoritmos genéticos e algoritmos de operação inteligente de trens.
+
+O estudo conduzido por \cite{wang2017} propõe uma nova abordagem de otimização de trajetória para trens em linhas de via única, com foco na minimização de atrasos operacionais e na redução do consumo de energia. A metodologia desenvolvida tem como objetivo principal encontrar perfis de velocidade ótimos que permitam mitigar os atrasos e otimizar o uso de energia dos trens. Este método utiliza conjuntos de restrições de horários para trens em situações de atraso, os quais fornecem janelas de tempo e velocidade viáveis e eficientes ao longo das rotas. Além disso, a minimização do consumo de energia é considerada como uma função objetivo relevante. A aplicabilidade dessa abordagem é demonstrada por meio de estudos de caso envolvendo trens operando em um corredor ferroviário de via única na Holanda, considerando diferentes cenários de atraso inicial.
+
+No contexto da planta apresentada, foram realizadas duas simulações distintas. A primeira envolveu apenas dois agentes, representados por autômatos, que colaboram no transporte e descarregamento de objetos. Nesse cenário mais simples, os agentes têm necessidades de ultrapassagem simples entre si, com um autômato responsável por mover objetos e cargas, e o outro encarregado de transportá-las. No segundo caso, foi modelada e controlada uma planta mais complexa, composta por um circuito dinâmico de trens. Estes apresentam restrições físicas de ultrapassagem e obedecem a protocolos determinados pelo controle supervisório, que emite comandos de ultrapassagem conforme as movimentações das junções de trilhos nas pistas.
+
+
+
+\section{Caso de Simulação - Ultrapassagem Simples}
+No primeiro cenário de simulação, foi delineado um sistema com uma única restrição: cada agente possui uma função específica e é essencial que cooperem para realizar o processo. Além disso, foi proposto um sistema de ultrapassagem simplificado, no qual não há restrições para ultrapassar, porém os agentes devem cooperar para executar a tarefa conjuntamente.
+\subsection{Apresentação da planta}
+No cenário de simulação simplificada, uma configuração composta por dois agentes é estabelecida, no qual um agente detém a responsabilidade específica pelo transporte, enquanto o outro é encarregado da manipulação da carga. Este arranjo é visualizado na Figura \ref{fig:simple_case}, onde ambos os agentes cooperam para efetuar o movimento de um objeto de uma coluna para outra, uma descrição de cada momento é dada no quadro \ref{quadro:sequencia_eventos}.
+
+\begin{figure}[ht]
+\centering
+\caption{Ambiente com dois agentes: um responsável pela manipulação de objetos e o outro pelo transporte.}
+\includegraphics[width=1\linewidth]{figures/Simulation/Simples/caso_simples.png}
+\label{fig:simple_case}
+\legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+\begin{quadro}[h]
+\centering
+\caption{Sequência de Eventos para Manipulação e Transporte de Objetos}
+\begin{tabularx}{\textwidth}{|c|X|}
+\hline
+\textbf{Momento} & \textbf{Descrição} \\
+\hline
+1 & O manipulador A encontra-se na posição inicial com o transportador B, e A' encontra-se na coluna da esquerda. O manipulador A coloca o objeto em B para transporte e posteriormente sai em direção à segunda coluna. \\
+\hline
+2 & O manipulador ultrapassa o transportador em direção à segunda coluna. \\
+\hline
+3 & Os dois agentes chegam ao mesmo tempo na referência desejada e o manipulador retira o objeto A' do transportador e passa para a segunda coluna. \\
+\hline
+4 & O manipulador pega A' e põe no transportador. \\
+\hline
+5 & O manipulador sai atrasado em direção à primeira coluna. \\
+\hline
+6 & O manipulador e o transportador chegam na coluna à esquerda ao mesmo tempo, e o manipulador retira A' do transportador e põe na primeira coluna. \\
+\hline
+\end{tabularx}
+\legend{Fonte: Elaborado pelo autor.}
+\label{quadro:sequencia_eventos}
+\end{quadro}
+
+\subsection{Modelagem em redes de Petri}
+Na modelagem em Rede de Petri Colorida, foram estabelecidos dois conjuntos de cores distintos. O primeiro conjunto, em cor vermelha, é designado para representar o recurso necessário à movimentação dos agentes, enquanto o segundo conjunto, em azul, simboliza o objeto A'. Na figura \ref{fig:simple_case_rpc}, é possível visualizar a representação em RPC, onde a porção superior da rede denota o protocolo de IDA (esquerda para direita), enquanto a parte inferior corresponde ao protocolo de Volta (direita para esquerda). Dentro do processo de IDA e VOLTA, houve uma subdivisão em lugares referentes ao Agente B (retângulo superior) e ao Agente A (retângulo inferior).
+Na RPC, ainda na figura \ref{fig:simple_case_rpc} as transições T1 e T2 representam os momentos de sincronização e transferência de material entre agentes. Em T1, ocorre a ação em que o manipulador A remove o material da coluna e o coloca no transportador B, enquanto em T2, o manipulador realiza o movimento inverso, retirando o material do transportador. A porção inferior do grafo representa o mesmo processo de movimentação, porém de direita para esquerda, denotando o caminho de volta.    
+\begin{figure}[ht]
+\centering
+\caption{Modelagem e rede de Petri Colorida para o caso com 2 agentes}
+\includegraphics[width=1\linewidth]{figures/Simulation/Simples/simple_case_rpc.png}
+\label{fig:simple_case_rpc}
+\legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+\subsection{Controle Cooperativo Aplicado}
+No contexto da aplicação do controle cooperativo para dois agentes, é estabelecida a matriz de grafos, conforme representado na Figura \ref{fig:grafo_simple_case}. 
+
+\begin{figure}[ht]
+\centering
+\caption{Grafo Multiagente para o caso com 2 agentes}
+\includegraphics[width=0.3\linewidth]{figures/Simulation/Simples/grafo_simple_case.png}
+\label{fig:grafo_simple_case}
+\legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+A primeira parte do algoritmo de controle cooperativo é definir os valores dos pesos entre agentes, onde o agente \( R \) é considerado como a referência. No problema proposto, foram definidos \( a_{31} = 0.5 \), \( a_{12} = 0.1 \), \( a_{21} = 0.1 \) e \( a_{32} = 0.3 \). Posteriormente, define-se a matriz de adjacência \( A \) e a matriz diagonal tal que \( A^T[0] \) corresponde à primeira linha de \( A \) transposta, \( A^T[1] \) à segunda linha e assim por diante, como demonstrado a seguir:
+\[
+A = \begin{bmatrix}
+0 & a_{12} & 0 \\
+a_{21} & 0 & 0 \\
+a_{31} & a_{32} & 0
+\end{bmatrix} ,
+D = \begin{bmatrix}
+sum(A^{T}[0]) & 0 & 0 \\
+0 & sum(A^{T}[1]) & 0 \\
+0 & 0 & sum(A^{T}[2])
+\end{bmatrix}
+\]
+Para a construção da matriz Laplaciana, o valor final da matriz é determinado de acordo com a Equação \ref{eq:matriz_L1}, resultando no seguinte valor de L.
+\[
+L = \begin{bmatrix}
+    sum(A^{T}[0]) & -a_{12} & 0 \\
+    -a_{21} & sum(A^{T}[1]) & 0 \\
+    -a_{31} & -a_{32} & sum(A^{T}[2])
+    \end{bmatrix}
+\]
+Por fim o sistema resultante em espaço de estados é dado pelos seguintes valores de $A$, $B$, $C$ e $D$;
+\[
+A = -L 
+ , 
+ B = \begin{bmatrix}
+    1\\
+    0\\
+    0\\
+\end{bmatrix}
+ ,
+C = \begin{bmatrix}
+    1 & 0 & 0\\
+    0 & 1 & 0\\
+    0 & 0 & 1\\
+\end{bmatrix}
+ ,
+D = 0
+\]
+Na realização da simulação, foram estabelecidos dois cenários distintos. No primeiro cenário, ilustrado pelo gráfico de ultrapassagem na figura \ref{fig:simple_ultrapassagem}, ocorre uma situação na qual o Manipulador (Agente A) necessita ultrapassar o Transportador (Agente B) para atingir a referência, resultando em uma proximidade temporal notável na chegada dos dois agentes à posição desejada.
+\begin{figure}[ht]
+\centering
+\caption{Comportamento do sistema em condição de ultrapassagem}
+\includegraphics[width=0.8\linewidth]{figures/Simulation/Simples/simple_ultrapassagem.png}
+\label{fig:simple_ultrapassagem}
+\legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+No segundo cenário, onde não ocorre ultrapassagem, foram atribuídos diferentes pesos entre os agentes e a referência. O agente com o maior peso (Agente A) apresenta um deslocamento mais rápido, enquanto o outro agente possui um movimento mais lento, o que simboliza o consenso para diferentes dinâmicas, conforme exemplificado na figura \ref{fig:simple_n_ultrapassagem}.
+
+\begin{figure}[ht]
+\centering
+\caption{Comportamento do sistema em condição de não ultrapassagem}
+\includegraphics[width=0.8\linewidth]{figures/Simulation/Simples/simple_n_ultrapassagem.png}
+\label{fig:simple_n_ultrapassagem}
+\legend{Fonte: Elaborado pelo autor.}
+\end{figure}
+
+
+\section{Caso de simulação - Ultrapassem Complexa}
+No contexto da simulação empregada nesse capítulo, ao incorporar a capacidade de ultrapassagem, a planta industrial adquire versatilidade, possibilitando a reorganização estratégica dos vagões para atender a demandas específicas. Essa funcionalidade torna-se particularmente valiosa em situações onde é necessário priorizar determinados vagões, reduzir tempos de espera ou melhorar o desempenho global do sistema ferroviário dentro do contexto da planta industrial.
 
 A implementação de mudanças nas pistas como um meio de permitir a ultrapassagem requer uma coordenação precisa e um controle eficaz do sistema. Técnicas como Redes de Petri Coloridas (RPC) ou algoritmos de controle cooperativo podem ser empregados para modelar e simular o comportamento dinâmico da planta, considerando as interações entre os vagões e as mudanças nas pistas.
 
@@ -38,7 +185,7 @@ A chave $x_2$ desempenha o papel de primeiro desviar para a posição $b$, para 
 
 As chaves $x_3$ e $x_4$ permanecem fixas na posição $b$, assegurando o percurso mais curto. Esse arranjo permite uma ultrapassagem de vagões de forma segura e otimizada entre as pistas.
 
-\section{Modelagem em Redes de Petri Colorida}
+\subsection{Modelagem em Redes de Petri Colorida}
 \label{sec:model_RPC}
 Para a modelagem do sistema proposto em Redes de Petri Colorida, foi definido o seguinte conjunto de cores para representar o tipo de token que vai ser alocado nos lugares da RPC de acordo com o seguinte quadro \ref{qua:conj_cores}.
 
@@ -107,7 +254,7 @@ A RPC de camada superior é dada pela figura \ref{fig:rede_geral}, nela é poss�
 \end{figure}
 
 
-\subsection{Modelagem da Pista}
+\subsubsection{Modelagem da Pista}
 \label{sub:model_pista}
 A modelagem da pista foi feito através do conjunto de lugares e transições que representam o movimento e mecanismos pelos quais os vagões iram transitar, a modelagem completa dada pela figura \ref{fig:rede_geral} foi dividida em algumas máscaras (representação parcial da rede) para melhor visualização ao longo da sub seção. 
 
@@ -143,7 +290,7 @@ Outro conceito fundamental na modelagem de uma RPC é o de reestabelecimento da 
 \end{figure}
 
 \clearpage
-\subsection{Modelagem Controladores}
+\subsubsection{Modelagem Controladores}
 Considerando o modelo anterior na subseção \ref{sub:model_pista} de organização das pistas a figura \ref{fig:pista_chaves_RPC} representa além dos componentes fundamentas das curvas das pistas $d_1$ a $d_6$, os componentes de chaves \textit{X}, com as transições hierárquicas de \textit{Controle} $X_1$ a \textit{Controle} $X_4$. Observe que nos pontos de junção e divisão se encontroam os locais $X_1$ a $X_4$, que pertencem ao conjunto \textit{X} que podem receber fichas do tipo "a" ou "b" como explicado no quadro \ref{qua:variaveis_RPC}, tais lugares controlam as condições de acionamento das transições ligadas os arcos de saída. 
 
 Por exemplo, dado um ficha "1`$(l_1)$" no lugar $d_1\_p_1$ quem vai definir qual transição será habilita, se para ir para a pista $d_3$ ou para a pista $d_6$, será a ficha no lugar $x_1$, que é controlada pela transição hierárquica \textit{Controle} $X_1$. Tal que dependendo da ficha que o local \textit{X} receber pelos respectivos Controladores será habilitada e desabilitada as transições que ligam as curvas ao longo da pista. 
@@ -178,7 +325,7 @@ Para o controle do lugar $X_1$ note que a rede possui inicialmente uma ficha no 
     \centering
     \caption{Rede referente ao controle hierárquico X1 na RPC}
     \label{fig:controle_x1}
-    \includegraphics[width=0.5\linewidth]{figures//Simulation//Modelagem/controle_x1.eps}
+    \includegraphics[width=0.8\linewidth]{figures//Simulation//Modelagem/controle_x1.eps}
     \legend{Fonte: Elaborado pelo autor.}
 \end{figure}
 
@@ -188,7 +335,7 @@ A RPC referente a transição \textit{Controle} $X_2$ é demonstrado na figura \
     \centering
     \caption{Rede referente ao controle hierárquico X2 na RPC}
     \label{fig:controle_x2}
-    \includegraphics[width=0.9\linewidth]{figures//Simulation//Modelagem/controle_x2.eps}
+    \includegraphics[width=1\linewidth]{figures//Simulation//Modelagem/controle_x2.eps}
     \legend{Fonte: Elaborado pelo autor.}
 \end{figure}
 
@@ -211,7 +358,7 @@ A RPC referente ao controlador $X_3$ e $X_4$, possuem estruturas e comportamento
 \end{figure}
 
 \clearpage 
-\subsection{Modelagem Ordenação dos vagões}
+\subsubsection{Modelagem Ordenação dos vagões}
 \label{sub:model_ord}
 Na hierarquia trabalhada referente a figura \ref{fig:hierarquia_RPC}, que do modelo hierárquico referente a RPC, será demonstrado agora as redes relacionadas aos comando de coordenação dos vagões. Na camada de cima da hierarquia da pista as transições e lugares de ordem e inversão de ordem possuem comunicação principal com os controladores, como demonstrado na máscara do primeiro nível hierárquico na figura \ref{fig:pista_ordem}. Note que as informações de ultrapassagem e não ultrapassagem tem comunicação contro os \textit{Controladores} $X1$ e $X2$ e quem gerencia o primeiro($1_{st}$) e segundo($2_{nd}$) lugar são os dois componentes de \textit{Ordem} e\textit{ Inversão de Ordem}.
 
@@ -265,7 +412,7 @@ Caso não tenha ocorrido ultrapassagem a transição $t_{37}$ é acionada envian
     \legend{Fonte: Elaborado pelo autor.}
 \end{figure}
 
-\section{Controle Cooperativo aplicado a Multiagentes}
+\subsection{Controle Cooperativo aplicado a Multiagentes}
 Posteriormente à detalhada modelagem do sistema na seção \ref{sec:model_RPC} que foi definida os principais eventos do sistema, além da arquitetura da rede que gera algumas regras para o deslocamento dos vagões é buscada um controle de nível superior responsável por otimizar a referência de posição de cada vagão. Para o desenvolvimento do controle cooperativo entre os vagões com o objetivo de evitar   colisões e promover a otimização das trajetórias é importante garantir que as transições na rede de petri possuem acionamentos praticamente instantâneos não influenciando assim de forma significativa na dinâmica do sistema.
 
 Para a coordenação e intercomunicação entre os agentes e a referência (agente virtual ou líder), foi escolhido o modelado o seguinte grafo \ref{fig:grafo_cooperativo}. Tal que $x_1$ e $x_2$, são os dois agentes da planta e o líder e dado por $x_3$. Note, que o grafo é classificado com um \textit{direct tree}, pois existe somente um líder o qual possui grau de entrada nulo, como apresentado na subseção \ref{sub:consenso_lider}. 
@@ -280,7 +427,7 @@ Para a coordenação e intercomunicação entre os agentes e a referência (agen
 
 Foram formulados dois tipos de problemática para o controle, o primeiro relacionado aos momentos que acontecem uma situação de ultrapassagem no ciclo de uma volta partindo e chagando em $d_1$ na pista da figura \ref{fig:pista_com_dois_agentes}, e o segundo o ciclo de uma volta sem ultrapassagem.
 
-\subsection{Casos de Ultrapassagem}
+\subsubsection{Casos de Ultrapassagem}
 Para a simulação e comportamento do controle por consenso nos casos de ultrapassagem foram escolhidas 4 referências diferentes para demonstrar o comportamento do sistema de acordo com a tabela \ref{tab:caso1_utrapassagem}. 
 \begin{table}[ht]
     \centering
@@ -294,6 +441,46 @@ Para a simulação e comportamento do controle por consenso nos casos de ultrapa
     \caption{Escolha de referências ao longo do tempo com inversão de sinal}
     \label{tab:caso1_utrapassagem}
 \end{table}
+
+Para  primeira parte do algoritmo de controle cooperativo os valores dos pesos entre agentes, onde o agente \( R \) é considerado como a referência. Posteriormente, define-se a matriz de adjacência \( A \) e a matriz diagonal tal que \( A^T[0] \) corresponde à primeira linha de \( A \) transposta, \( A^T[1] \) à segunda linha e assim por diante, como demonstrado a seguir:
+\[
+A = \begin{bmatrix}
+0 & a_{12} & 0 \\
+a_{21} & 0 & 0 \\
+a_{31} & a_{32} & 0
+\end{bmatrix} ,
+D = \begin{bmatrix}
+sum(A^{T}[0]) & 0 & 0 \\
+0 & sum(A^{T}[1]) & 0 \\
+0 & 0 & sum(A^{T}[2])
+\end{bmatrix}
+\]
+Para a construção da matriz Laplaciana, o valor final da matriz é determinado de acordo com a Equação \ref{eq:matriz_L1}, resultando no seguinte valor de L.
+\[
+L = \begin{bmatrix}
+    sum(A^{T}[0]) & -a_{12} & 0 \\
+    -a_{21} & sum(A^{T}[1]) & 0 \\
+    -a_{31} & -a_{32} & sum(A^{T}[2])
+    \end{bmatrix}
+\]
+Por fim o sistema resultante em espaço de estados é dado pelos seguintes valores de $A$, $B$, $C$ e $D$;
+\[
+A = -L 
+ , 
+ B = \begin{bmatrix}
+    1\\
+    0\\
+    0\\
+\end{bmatrix}
+ ,
+C = \begin{bmatrix}
+    1 & 0 & 0\\
+    0 & 1 & 0\\
+    0 & 0 & 1\\
+\end{bmatrix}
+ ,
+D = 0
+\]
 Por meio da simulação com todos os pesos nos arcos iguais a $0.5$ é obtido a seguinte o gráfico da figura \ref{fig:case1}. Note que inicialmente é praticamente  considerado que os dois iniciam praticamente junto e vão se separando no tempo de 0 a 20 minutos, até que ao chegar aproximadamente em torno de 30 segundo a referência é alterada e é feita uma ultrapassagem nos momentos seguintes as colocações se mantêm mas a distância entre os agentes vai cada vez mais diminuindo coma escolha das referências. 
 
 \begin{figure}[ht]
@@ -333,7 +520,7 @@ Ainda na análise com os valores de referência descritos na tabela \ref{tab:cas
     \legend{Fonte: Elaborado pelo autor.}
 \end{figure}
 
-\subsection{Casos de Não Ultrapassagem}
+\subsubsection{Casos de Não Ultrapassagem}
 O segundo grupo de simulações é relacionado aos casos onde não é necessário que ocorra ultrapassagem entre os agentes, ou seja a formação inicial seja mantida ao longo das mudanças de referência. Para isso é utilizado os valores de referência de acordo com a a tabela \ref{tab:caso1_sem_utrapassagem}
 \begin{table}[ht]
     \centering

@@ -1,5 +1,6 @@
 \chapter{Redes de Petri}
 \label{chap:petri}
+Esta seção aborda a utilização das Redes de Petri como uma ferramenta crucial na modelagem matemática de sistemas que operam em eventos discretos, especialmente em contextos de controle cooperativo em sistemas multiagentes. Serão apresentados conceitos essenciais, representações gráficas e aplicações práticas das Redes de Petri Colorida, destacando sua contribuição para a formalização de problemas, a modelagem matemática precisa, representação gráfica e as soluções aplicáveis em cenários de controle cooperativo.
 
 \section{Modelagem de Sistemas}
 Para a modelagem de sistemas é importante entender as principais características do sistema que está sendo estudado, no propósito de uma revisão na classificação de sistemas,foi elencado em \cite{cassandras} tais classificações, observe que elas não são necessariamente auto exclusivas: 
@@ -174,4 +175,11 @@ A rede apresentada anteriormente com elementos simples de arcos, marcações, tr
 
 As redes de Petri  coloridas (\gls{RPC}) são uma ferramenta gráfica e matemática que se adaptam bem a um grande numero de aplicações, tais como protocolos de comunicação, controle de oficinas de fabricação. É uma combinação das redes de Petri com linguagem de computação. Os elementos da \gls{RPC} são baseados em hierarquias, que permite que módulos tenham submódulos, permitindo a reusabilidade dos módulos. Isso permite trabalhar tanto com a abordagem \textit{top-down}, quanto \textit{bottom-up}, na construção dos modelos em RPC, capturando assim diferentes camadas de abstração na modelagem do sistema.
 
+A seleção da simulação de Redes de Petri Coloridas como metodologia decorre de sua capacidade inerente de divisão hierárquica na modelagem. Esta característica permite a criação de grafos detalhados de processos individuais, bem como a representação de interações entre processos, destacando sua relevância particular em contextos caracterizados por problemas de complexidade substancial.
+
+Além disso, merece destaque a capacidade das Redes de Petri Coloridas em representar tokens de diferentes tipos. Essa capacidade simplifica a modelagem da complexidade de problemas variados, conferindo-lhes uma compreensibilidade e intuição que são cruciais para análises detalhadas e precisas.
+
+Por fim, a opção pelo controle cooperativo para gerenciar referências em níveis inferiores das Redes de Petri é justificada pela robustez e adaptabilidade inerentes a essa abordagem. Esta escolha se revela particularmente vantajosa na sincronização de múltiplos agentes em uma planta industrial, contribuindo significativamente para a escalabilidade e eficiência dos processos.
+
+O próximo capítulo abordará as simulações relacionadas à abordagem integrada das Redes de Petri e do controle cooperativo. Serão discutidas as modelagens envolvidas nessa integração, bem como a dinâmica resultante do controle cooperativo para alcançar o consenso entre os diversos agentes participantes. Serão analisados dois problemas com diferentes níveis de complexidade, com o intuito de avaliar a eficiência, a robustez e a complexidade dessa abordagem integrada no contexto do controle de sistemas multiagentes.
 %% Apresentar em formato de quadro.
