@@ -1,12 +1,14 @@
-FROM ubuntu:18.10
+FROM debian:buster-slim
 
 # non interactive frontend for locales
 ENV DEBIAN_FRONTEND=noninteractive
 
 # installing texlive and utils
-RUN apt-get update && \
-    apt-get -y install --no-install-recommends pandoc texlive texlive-latex-extra texlive-generic-extra texlive-extra-utils texlive-fonts-extra texlive-bibtex-extra biber latexmk make git procps locales curl && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update -q \
+    && apt-get -y install --no-install-recommends \
+    pandoc texlive texlive-latex-extra texlive-generic-extra texlive-extra-utils texlive-fonts-extra \
+    texlive-bibtex-extra biber latexmk make git procps locales curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # generating locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
